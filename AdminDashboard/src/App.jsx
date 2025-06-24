@@ -1,148 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Menu, X, User, LogOut, Home, FileText, BookOpen, Clock, Brain, ChevronDown, Bell, Search } from 'lucide-react';
 
-// Mock components for demonstration
-const AdminPannel = ({ user, onLogout }) => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard</h1>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-gray-900">Total Notes</h3>
-        <p className="text-3xl font-bold text-blue-600 mt-2">24</p>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-gray-900">Blog Posts</h3>
-        <p className="text-3xl font-bold text-green-600 mt-2">12</p>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-gray-900">Quiz Results</h3>
-        <p className="text-3xl font-bold text-purple-600 mt-2">156</p>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-semibold text-gray-900">Page Views</h3>
-        <p className="text-3xl font-bold text-orange-600 mt-2">2.4k</p>
-      </div>
-    </div>
-  </div>
-);
-
-const AdminNotes = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold text-gray-900 mb-6">Notes Management</h1>
-    <div className="bg-white rounded-lg shadow p-6">
-      <p className="text-gray-600">Notes management interface</p>
-    </div>
-  </div>
-);
-
-const AdminBlog = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold text-gray-900 mb-6">Blog Management</h1>
-    <div className="bg-white rounded-lg shadow p-6">
-      <p className="text-gray-600">Blog management interface</p>
-    </div>
-  </div>
-);
-
-const PageHistory = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold text-gray-900 mb-6">Page History</h1>
-    <div className="bg-white rounded-lg shadow p-6">
-      <p className="text-gray-600">Page history interface</p>
-    </div>
-  </div>
-);
-
-const AdminQuiz = () => (
-  <div className="p-6">
-    <h1 className="text-2xl font-bold text-gray-900 mb-6">Quiz Management</h1>
-    <div className="bg-white rounded-lg shadow p-6">
-      <p className="text-gray-600">Quiz management interface</p>
-    </div>
-  </div>
-);
-
-const AdminLogin = ({ onLogin }) => {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const result = await onLogin(credentials);
-      if (!result.success) {
-        setError(result.message);
-      }
-    } catch (error) {
-      setError('Login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Admin Login
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                value={credentials.username}
-                onChange={(e) => setCredentials({...credentials, username: e.target.value})}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={credentials.password}
-                onChange={(e) => setCredentials({...credentials, password: e.target.value})}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-            >
-              {isLoading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
+import AdminPannel from "./Admin/Admin";
+import AdminNotes from "./Admin/AdminNotes";
+import AdminBlog from "./Admin/AdminBlog";
+import PageHistory from "./Admin/History";
+import AdminQuiz from "./Admin/AdminQuiz";
+import AdminLogin from './Admin/AdLogin';
 
 // Header Component
 const Header = ({ user, onLogout }) => {
@@ -292,9 +157,9 @@ const Navbar = () => {
             {navigationItems.map((item) => {
               const Icon = item.icon;
               return (
-                <Link
+                <a
                   key={item.name}
-                  to={item.href}
+                  href={item.href}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
                       ? 'bg-blue-600 text-white shadow-lg'
@@ -303,7 +168,7 @@ const Navbar = () => {
                 >
                   <Icon className="w-4 h-4" />
                   <span>{item.name}</span>
-                </Link>
+                </a>
               );
             })}
           </div>
@@ -317,9 +182,9 @@ const Navbar = () => {
             {navigationItems.map((item) => {
               const Icon = item.icon;
               return (
-                <Link
+                <a
                   key={item.name}
-                  to={item.href}
+                  href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center space-x-3 w-full px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
                     isActive(item.href)
@@ -329,7 +194,7 @@ const Navbar = () => {
                 >
                   <Icon className="w-5 h-5" />
                   <span>{item.name}</span>
-                </Link>
+                </a>
               );
             })}
           </div>
@@ -339,7 +204,7 @@ const Navbar = () => {
   );
 };
 
-// Layout Component
+// Layout Component - wraps all authenticated pages
 const Layout = ({ children, user, onLogout }) => {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -352,10 +217,10 @@ const Layout = ({ children, user, onLogout }) => {
   );
 };
 
-// Protected Route Component
+// Protected Route Component - Updated to include Layout
 const ProtectedRoute = ({ children, isAuthenticated, user, onLogout }) => {
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <AdminLogin />;
   }
   
   return (
@@ -376,15 +241,32 @@ const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  const checkAuthStatus = () => {
+  const checkAuthStatus = async () => {
     try {
-      // For demo purposes, we'll simulate auth check
-      // In production, you'd verify with your backend
-      const userData = { username: 'admin', email: 'admin@example.com' };
-      setUser(userData);
-      setIsAuthenticated(false); // Set to false initially for demo
+      const token = localStorage.getItem('adminToken');
+      if (token) {
+        // Verify token with backend
+        const response = await fetch('https://admin-pannel-7lg4.onrender.com/api/admin/verify', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+          setIsAuthenticated(true);
+        } else {
+          // Token is invalid, remove it
+          localStorage.removeItem('adminToken');
+          setIsAuthenticated(false);
+        }
+      }
     } catch (error) {
       console.error('Auth check failed:', error);
+      localStorage.removeItem('adminToken');
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
@@ -393,14 +275,24 @@ const AuthProvider = ({ children }) => {
 
   const handleLogin = async (credentials) => {
     try {
-      // Simulate login - in production, call your API
-      if (credentials.username === 'admin' && credentials.password === 'password') {
-        const userData = { username: 'admin', email: 'admin@example.com' };
-        setUser(userData);
+      const response = await fetch('https://admin-pannel-7lg4.onrender.com/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store token and user data
+        localStorage.setItem('adminToken', data.token);
+        setUser(data.user);
         setIsAuthenticated(true);
         return { success: true, message: 'Login successful' };
       } else {
-        return { success: false, message: 'Invalid credentials' };
+        return { success: false, message: data.message || 'Login failed' };
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -409,6 +301,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('adminToken');
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -442,17 +335,10 @@ function App() {
 
           return (
             <Routes>
-              {/* Login Route */}
-              <Route 
-                path="/login" 
-                element={
-                  isAuthenticated ? 
-                    <Navigate to="/admin" replace /> : 
-                    <AdminLogin onLogin={handleLogin} />
-                } 
-              />
-
-              {/* Admin Routes */}
+              {/* Redirect root to admin */}
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              
+              {/* Admin Routes - All wrapped with ProtectedRoute that includes Layout */}
               <Route 
                 path="/admin" 
                 element={
@@ -498,11 +384,18 @@ function App() {
                 } 
               />
 
-              {/* Redirect root to login */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              
-              {/* Catch all other routes and redirect to login */}
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              {/* Login Route - No Layout wrapper */}
+              <Route 
+                path="/login" 
+                element={
+                  isAuthenticated ? 
+                    <Navigate to="/admin" replace /> : 
+                    <AdminLogin onLogin={handleLogin} />
+                } 
+              />
+
+              {/* Catch all other routes and redirect to admin */}
+              <Route path="/" element={<Navigate to="/admin" replace />} />
             </Routes>
           );
         }}
