@@ -9,14 +9,13 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (token) {
-      // Redirect to admin dashboard if already logged in
-      window.history.pushState(null, '', '/admin');
-      window.dispatchEvent(new PopStateEvent('popstate'));
+      setIsLoggedIn(true);
     }
   }, []);
 
@@ -45,9 +44,12 @@ const AdminLogin = () => {
         localStorage.setItem('adminToken', data.token);
         localStorage.setItem('adminUser', JSON.stringify(data.user));
         
-        // Navigate to admin dashboard without page refresh
-        window.history.pushState(null, '', '/admin');
-        window.dispatchEvent(new PopStateEvent('popstate'));
+        // Set logged in state
+        setIsLoggedIn(true);
+        
+        // For React Router, you would typically use navigate() or history.push()
+        // For now, we'll redirect using window.location
+        window.location.href = '/admin';
       } else {
         setError(data.message || 'Login failed. Please check your credentials.');
       }
@@ -64,6 +66,42 @@ const AdminLogin = () => {
       handleLogin();
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    setIsLoggedIn(false);
+    window.location.href = '/login';
+  };
+
+  // If user is already logged in, show admin dashboard or redirect message
+  if (isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-600 via-blue-600 to-purple-800 flex items-center justify-center p-4">
+        <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 p-8 w-full max-w-md text-center">
+          <div className="bg-white/20 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+            <User className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome Admin!</h1>
+          <p className="text-white/70 mb-6">You are successfully logged in</p>
+          <div className="space-y-4">
+            <button
+              onClick={() => window.location.href = '/admin'}
+              className="w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/30"
+            >
+              Go to Admin Dashboard
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full bg-red-500/20 hover:bg-red-500/30 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 backdrop-blur-sm border border-red-500/30"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 flex items-center justify-center p-4">

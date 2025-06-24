@@ -4,11 +4,12 @@ const HistoryPage = () => {
   const [historyData, setHistoryData] = useState({
     notes: [],
     blogs: [],
+    quizzes: [],
     userSessions: [],
     loading: true,
     error: null
   });
-  const [filter, setFilter] = useState('all'); // all, notes, blogs, sessions
+  const [filter, setFilter] = useState('all'); // all, notes, blogs, quizzes, sessions
   const [sortBy, setSortBy] = useState('date-desc'); // date-asc, date-desc, type
   const [dateRange, setDateRange] = useState('all'); // all, today, week, month
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,12 +37,20 @@ const HistoryPage = () => {
         blogsData = await blogsResponse.json();
       }
 
+      // Fetch quizzes data
+      const quizzesResponse = await fetch('https://quiz-pcmq-with-malika-1.onrender.com/api/quizzes');
+      let quizzesData = [];
+      if (quizzesResponse.ok) {
+        quizzesData = await quizzesResponse.json();
+      }
+
       // Generate mock user sessions (replace with actual user session API)
       const userSessions = generateMockUserSessions();
 
       setHistoryData({
         notes: Array.isArray(notesData) ? notesData : [],
         blogs: Array.isArray(blogsData) ? blogsData : [],
+        quizzes: Array.isArray(quizzesData) ? quizzesData : [],
         userSessions,
         loading: false,
         error: null
@@ -59,10 +68,10 @@ const HistoryPage = () => {
   // Mock user sessions - replace with actual API call
   const generateMockUserSessions = () => {
     const sessions = [];
-    const actions = ['Login', 'Logout', 'View Dashboard', 'Upload Note', 'Create Blog', 'Edit Blog', 'Delete Note'];
-    const users = ['admin@example.com', 'editor@example.com', 'viewer@example.com'];
+    const actions = ['Login', 'Logout', 'View Dashboard', 'Upload Note', 'Create Blog', 'Edit Blog', 'Delete Note', 'Take Quiz', 'Create Quiz', 'Update Quiz'];
+    const users = ['admin@example.com', 'editor@example.com', 'viewer@example.com', 'student@example.com'];
     
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 25; i++) {
       const date = new Date();
       date.setDate(date.getDate() - Math.floor(Math.random() * 30));
       
@@ -94,6 +103,7 @@ const HistoryPage = () => {
   const getActivityType = (item) => {
     if (item.user) return 'session';
     if (item.title || item.content) return 'blog';
+    if (item.questions || item.question) return 'quiz';
     return 'note';
   };
 
@@ -101,6 +111,7 @@ const HistoryPage = () => {
     switch (type) {
       case 'blog': return '📝';
       case 'note': return '📚';
+      case 'quiz': return '🧠';
       case 'session': return '👤';
       default: return '📄';
     }
@@ -113,6 +124,9 @@ const HistoryPage = () => {
     }
     if (type === 'note') {
       return item.updatedAt || item.createdAt || item.uploadDate || item.created_at;
+    }
+    if (type === 'quiz') {
+      return item.updatedAt || item.createdAt || item.created_at;
     }
     return null;
   };
@@ -176,6 +190,34 @@ const HistoryPage = () => {
       }
     });
 
+    // Add quizzes
+    historyData.quizzes.forEach(quiz => {
+      const createdDate = quiz.createdAt || quiz.created_at;
+      const updatedDate = quiz.updatedAt || quiz.updated_at;
+      
+      if (createdDate) {
+        activities.push({
+          ...quiz,
+          activityType: 'quiz',
+          activityAction: 'created',
+          activityDate: createdDate,
+          activityTitle: `Quiz created: ${quiz.title || quiz.name || 'Untitled Quiz'}`,
+          activityDescription: `Quiz with ${quiz.questions?.length || quiz.questionCount || 0} questions`
+        });
+      }
+      
+      if (updatedDate && updatedDate !== createdDate) {
+        activities.push({
+          ...quiz,
+          activityType: 'quiz',
+          activityAction: 'updated',
+          activityDate: updatedDate,
+          activityTitle: `Quiz updated: ${quiz.title || quiz.name || 'Untitled Quiz'}`,
+          activityDescription: 'Quiz was modified'
+        });
+      }
+    });
+
     // Add user sessions
     historyData.userSessions.forEach(session => {
       activities.push({
@@ -199,6 +241,7 @@ const HistoryPage = () => {
       activities = activities.filter(activity => {
         if (filter === 'notes') return activity.activityType === 'note';
         if (filter === 'blogs') return activity.activityType === 'blog';
+        if (filter === 'quizzes') return activity.activityType === 'quiz';
         if (filter === 'sessions') return activity.activityType === 'session';
         return true;
       });
@@ -260,6 +303,10 @@ const HistoryPage = () => {
       if (action === 'created') return 'border-yellow-500 bg-yellow-50';
       return 'border-yellow-400 bg-yellow-25';
     }
+    if (type === 'quiz') {
+      if (action === 'created') return 'border-indigo-500 bg-indigo-50';
+      return 'border-indigo-400 bg-indigo-25';
+    }
     return 'border-gray-500 bg-gray-50';
   };
 
@@ -314,7 +361,7 @@ const HistoryPage = () => {
       )}
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
@@ -342,6 +389,15 @@ const HistoryPage = () => {
             <div className="text-3xl">📝</div>
           </div>
         </div>
+        <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-indigo-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium">Quizzes</p>
+              <p className="text-3xl font-bold text-gray-800">{historyData.quizzes.length}</p>
+            </div>
+            <div className="text-3xl">🧠</div>
+          </div>
+        </div>
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
           <div className="flex items-center justify-between">
             <div>
@@ -367,6 +423,7 @@ const HistoryPage = () => {
               <option value="all">All Activities</option>
               <option value="notes">📚 Notes</option>
               <option value="blogs">📝 Blogs</option>
+              <option value="quizzes">🧠 Quizzes</option>
               <option value="sessions">👤 User Sessions</option>
             </select>
           </div>

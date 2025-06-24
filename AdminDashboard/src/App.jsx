@@ -395,7 +395,7 @@ function App() {
               />
 
               {/* Catch all other routes and redirect to admin */}
-              <Route path="/*" element={<Navigate to="/admin" replace />} />
+              <Route path="/" element={<Navigate to="/admin" replace />} />
             </Routes>
           );
         }}
