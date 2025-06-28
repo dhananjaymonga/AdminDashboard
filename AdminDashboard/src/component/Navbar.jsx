@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Menu, X, Home, FileText, BookOpen, Clock, Brain } from 'lucide-react';
 
 // Navbar Component
@@ -37,9 +37,9 @@ const Navbar = () => {
             {navigationItems.map((item) => {
               const Icon = item.icon;
               return (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.href}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive(item.href)
                       ? 'bg-blue-600 text-white shadow-lg'
@@ -48,7 +48,7 @@ const Navbar = () => {
                 >
                   <Icon className="w-4 h-4" />
                   <span>{item.name}</span>
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -62,9 +62,9 @@ const Navbar = () => {
             {navigationItems.map((item) => {
               const Icon = item.icon;
               return (
-                <a
+                <Link
                   key={item.name}
-                  href={item.href}
+                  to={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center space-x-3 w-full px-3 py-3 rounded-lg text-base font-medium transition-all duration-200 ${
                     isActive(item.href)
@@ -74,7 +74,7 @@ const Navbar = () => {
                 >
                   <Icon className="w-5 h-5" />
                   <span>{item.name}</span>
-                </a>
+                </Link>
               );
             })}
           </div>

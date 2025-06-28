@@ -431,7 +431,7 @@ const LoadingScreen = () => (
 // Main App Component
 function App() {
   return (
-    <Router>
+    <Router basename="/">
       <AuthProvider>
         {({ isAuthenticated, isLoading, user, handleLogin, handleLogout }) => {
           // Show loading spinner while checking authentication
@@ -441,10 +441,17 @@ function App() {
 
           return (
             <Routes>
-              {/* Redirect root to login */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              
-              {/* Admin Routes - All wrapped with ProtectedRoute */}
+              {/* Login Route - First priority */}
+              <Route 
+                path="/login" 
+                element={
+                  isAuthenticated ? 
+                    <Navigate to="/admin" replace /> : 
+                    <AdminLogin onLogin={handleLogin} />
+                } 
+              />
+
+              {/* Admin Routes */}
               <Route 
                 path="/admin" 
                 element={
@@ -490,18 +497,25 @@ function App() {
                 } 
               />
 
-              {/* Login Route */}
+              {/* Root redirect */}
               <Route 
-                path="/login" 
+                path="/" 
                 element={
                   isAuthenticated ? 
                     <Navigate to="/admin" replace /> : 
-                    <AdminLogin onLogin={handleLogin} />
+                    <Navigate to="/login" replace />
                 } 
               />
 
-              {/* Catch all other routes and redirect to login */}
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              {/* Catch all other routes */}
+              <Route 
+                path="*" 
+                element={
+                  isAuthenticated ? 
+                    <Navigate to="/admin" replace /> : 
+                    <Navigate to="/login" replace />
+                } 
+              />
             </Routes>
           );
         }}
