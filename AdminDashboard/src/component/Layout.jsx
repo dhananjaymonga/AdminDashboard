@@ -3,10 +3,23 @@ import Header from './Header';
 import Navbar from './Navbar';
 
 // Layout Component - wraps all authenticated pages
-const Layout = ({ children, user, onLogout }) => {
+// const Layout = ({ children, user, onLogout }) => {
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       <Header user={user} onLogout={onLogout} />
+//       <Navbar />
+//       <main className="max-w-7xl mx-auto">
+//         {children}
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default Layout;
+const Layout = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header user={user} onLogout={onLogout} />
+      <Header />
       <Navbar />
       <main className="max-w-7xl mx-auto">
         {children}
@@ -14,5 +27,4 @@ const Layout = ({ children, user, onLogout }) => {
     </div>
   );
 };
-
 export default Layout;
