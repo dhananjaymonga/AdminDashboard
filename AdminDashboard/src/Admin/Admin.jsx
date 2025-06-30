@@ -550,7 +550,7 @@ const AdminPanel = () => {
             <div className="flex flex-wrap gap-4 items-center justify-between">
               <div className="flex flex-wrap gap-4">
                 <button
-                  onClick={() => window.location.href = '/historypa'}
+                  onClick={() => window.location.href = '/admin/history'}
                   className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
                 >
                   📋 View History
