@@ -498,7 +498,7 @@ function App() {
   return (
 
     <div>
-      {/* <Navbar/> */}
+      <Navbar/>
       <AdminPanel/>
     </div>
   )

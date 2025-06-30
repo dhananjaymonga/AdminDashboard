@@ -13,6 +13,10 @@ import './index.css'
 import App from './App.jsx'
 const router=createBrowserRouter([
   {
+    path:"/",
+    element:<App/>
+  },
+  {
     path:"/admin",
     element:<AdminPannel/>
   },
